@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<title>Hospital Infection Spread Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+		<!-- d3 is for data visualization -->
+		<script type="text/javascript" src="lib/d3.min.js"></script>
+		
+		<!-- inspectElement is useful for debugging javascript objects 
+		<script type="text/javascript" src="lib/inspectElement.js"></script>-->
+
+		<!-- plotly is for drawing graphs -->
+		<script type="text/javascript" src="lib/plotly.min.js"></script> 
+				
+		<!-- custom styles for this application -->
+		<link rel="stylesheet" href="styles/basicagentmodel.css" media="screen">
+
+<!-- heather added -->
+</head>
+<!-- Set class to official for more formal font; unofficial for informal font -->
+<body class="official bgColor0">
+	<p style="position:absolute;top:57%;left:79%; font-size:90%;">Simulation Parameters</p>
+	<p style="position:absolute;top:57%;left:2%; font-size:90%;">Graphs</p>
+	<p style="position:absolute;top:7.7%;left:1.5%; font-size:60%;">Entry</p>
+	<p style="position:absolute;top:28%;left:1.7%; font-size:60%;">Exit</p>
+	<p style="position:absolute;top:17.9%;left:94.6%; font-size:60%;">Dead</p>
+	<p style="position:absolute;top:2.3%;left:11%; font-size:60%;">Standard Ward 1</p>
+	<p style="position:absolute;top:28.2%;left:11%; font-size:60%;">Standard Ward 2</p>
+	<p style="position:absolute;top:28.2%;left:82%; font-size:60%;">Standard Ward 3</p>
+	<p style="position:absolute;top:2.3%;left:58%; font-size:60%;">Waiting Area</p>
+	<p style="position:absolute;top:2.3%;left:80%; font-size:60%;">Isolation Ward</p>
+	<p style="position:absolute;top:23%;left:46%; font-size:60%;">Communal Area</p>
+	<div class = "placeholder-box" style="position:absolute;top:63%;left:70%; width: 28%; height: 30%;">
+		<p style="position:absolute;top:1%;left:5%;"> 1) Simulation Speed </p>
+		<p><input id="slider1" type="range" min="0" value="300" max="5000" step="100" oninput="slider1Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:17%;left:5%"/></p>
+		<p id="slider1Value" style="position:absolute;top:12%;left:37%">300</p>
+
+		<p style="position:absolute;top:25%;left:5%;"> 2) Arrival Rate </p>
+	  <p><input id="slider2" type="range" min="0" value="0.5" max="1" step="0.05" oninput="slider2Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:41%;left:5%" /></p>
+		<p id="slider2Value" style="position:absolute;top:36%;left:37%">0.5</p>
+
+		<p style="position:absolute;top:49%;left:5%;"> 3) Infection Rate </p>
+		<p><input id="slider3" type="range" min="0" value="0.5" max="1" step="0.05" oninput="slider3Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:65%;left:5%" /></p>
+		<p id="slider3Value" style="position:absolute;top:60%;left:37%">0.5</p>
+
+		<p style="position:absolute;top:73%;left:5%;"> 4) Distance of Transmission </p>
+		<input id="slider4" type="range" min="0" value="2" max="5" step="0.5" oninput="slider4Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:89%;left:5%" /></p>
+		<p id="slider4Value" style="position:absolute;top:84%;left:37%">2</p>
+
+		<p style="position:absolute;top:1%;left:50%;"> 5) Infection Diagnosis Rate </p>
+		<p><input id="slider5" type="range" min="0" value="0.7" max="1" step="0.05" oninput="slider5Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:17%;left:50%" /></p>
+		<p id="slider5Value" style="position:absolute;top:12%;left:82%">0.7</p>
+
+		<p style="position:absolute;top:25%;left:50%;"> 6) Infection Recovery Rate </p>
+		<p><input id="slider6" type="range" min="0" value="0.5" max="1" step="0.05" oninput="slider6Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:41%;left:50%" /></p> 
+		<p id="slider6Value" style="position:absolute;top:36%;left:82%">0.5</p>
+
+		<p style="position:absolute;top:49%;left:50%;"> 7) No. of Beds per Ward </p>
+		<p><input id="slider7" type="range" min="2" value="16" max="30" step="2" oninput="slider7Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:65%;left:50%" /></p> 
+		<p id="slider7Value" style="position:absolute;top:60%;left:82%">16</p>
+
+		<p style="position:absolute;top:73%;left:50%;"> 8) No. of Healthcare Workers </p>
+		<p><input id="slider8" type="range" min="10" value="30" max="100" step="10" oninput="slider8Value.innerText = this.value" onchange="redrawWindow();" style="position:absolute;top:89%;left:50%" /></p> 
+	  <p id="slider8Value" style="position:absolute;top:84%;left:82%">30</p>
+	</div>
+	<!-- heather end -->
+	
+	<!-- The surface is the main playing field for the game -->
+	<svg  id="surface" style="width:100%; height:55%;" xmlns="http://www.w3.org/2000/svg" version="1.1" onclick="toggleSimStep();">
+	</svg>
+	
+	
+	<div id="title"  style="position:absolute;bottom:0;left:0;">Hospital Infection Spread Model</div>
+	<a id="credits" href="https://www.flaticon.com/" style="position:absolute;bottom:0;right:0;">Icons by https://www.flaticon.com/</a>
+	
+	<!-- Anything below this line should be a popup window or dialog or a late-loading library -->
+	
+	<script type="text/javascript" src="lib/Hospital.js"></script>
+	
+	<img src="images/legend.png" alt="Legend" style="position:absolute; top:63%; left:48%; width:21%; height:32%;">
+
+	<!-- Add in Charts -->	
+	<div id="chart1" style="position:absolute; top:49.5%; left:0.5%; width:28%; height:50%;"></div>
+	<div id="chart2" style="position:absolute; top:49.5%; left:24%; width:28%; height:50%;"></div>
+	<script type="text/javascript" src="lib/PlotGraph.js"></script> 
+</body>
+</html>
